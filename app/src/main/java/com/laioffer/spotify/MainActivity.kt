@@ -1,6 +1,8 @@
 package com.laioffer.spotify
 
 import android.os.Bundle
+import android.provider.Settings.Global
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
@@ -26,7 +28,12 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import coil.compose.AsyncImage
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.laioffer.spotify.network.NetworkApi
+import com.laioffer.spotify.network.NetworkModule
 import com.laioffer.spotify.ui.theme.SpotifyTheme
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 // customized extend AppCompatActivity
 class MainActivity : AppCompatActivity() {
@@ -53,6 +60,13 @@ class MainActivity : AppCompatActivity() {
         navController.setGraph(R.navigation.nav_graph)
 
         NavigationUI.setupWithNavController(navView, navController)
+
+        //Networking
+        GlobalScope.launch(Dispatchers.IO) {
+            val api = NetworkModule.provideRetrofit().create(NetworkApi::class.java)
+            val response = api.getHomeFeed().execute().body()
+            Log.d("Network", response.toString())
+        }
     }
 }
 
