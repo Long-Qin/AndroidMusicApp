@@ -29,17 +29,19 @@ import com.laioffer.spotify.ui.theme.SpotifyTheme
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContent {
-            SpotifyTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
-                ) {
-                    Greeting("Android")
-                }
-            }
-        }
+//        setContent {
+//            SpotifyTheme {
+//                // A surface container using the 'background' color from the theme
+//                Surface(
+//                    modifier = Modifier.fillMaxSize(),
+//                    color = MaterialTheme.colors.background
+//                ) {
+//                    //Greeting("Android")
+//                    AlbumCover()
+//                }
+//            }
+//        }
+        setContentView(R.layout.activity_main)
     }
 }
 
