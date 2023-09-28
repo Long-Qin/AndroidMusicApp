@@ -22,7 +22,10 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.NavigationUI
 import coil.compose.AsyncImage
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.laioffer.spotify.ui.theme.SpotifyTheme
 
 // customized extend AppCompatActivity
@@ -42,6 +45,14 @@ class MainActivity : AppCompatActivity() {
 //            }
 //        }
         setContentView(R.layout.activity_main)
+        val navView = findViewById<BottomNavigationView>(R.id.nav_view)
+
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment // cast to NavHostFragment type
+
+        val navController = navHostFragment.navController
+        navController.setGraph(R.navigation.nav_graph)
+
+        NavigationUI.setupWithNavController(navView, navController)
     }
 }
 
