@@ -1,6 +1,7 @@
 package com.laioffer.spotify.datamodel
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 data class Album(
 
@@ -17,7 +18,7 @@ data class Album(
 
     val description: String
 
-) {
+):Serializable {
     companion object{
         fun empty(): Album{
             return Album(

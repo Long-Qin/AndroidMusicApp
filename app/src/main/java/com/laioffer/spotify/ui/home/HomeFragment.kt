@@ -10,6 +10,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.viewModels
+import androidx.navigation.findNavController
 import com.laioffer.spotify.R
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -26,6 +27,8 @@ class HomeFragment : Fragment() {
             setContent {
                 MaterialTheme(colors = darkColors()){
                     HomeScreen(viewModel, onTap = {
+                        val direction = HomeFragmentDirections.actionHomeFragmentToPlaylistFragment(it)
+                        findNavController().navigate(direction)
                         Log.d("HomeFragment", "We tapped ${it.name}")
                     })
                 }
