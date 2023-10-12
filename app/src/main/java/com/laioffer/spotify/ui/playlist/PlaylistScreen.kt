@@ -2,6 +2,9 @@ package com.laioffer.spotify.ui.playlist
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -14,12 +17,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.node.modifierElementOf
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.google.android.material.color.ColorRoles
 import com.laioffer.spotify.R
 import com.laioffer.spotify.datamodel.Album
+import com.laioffer.spotify.datamodel.Playlist
+import com.laioffer.spotify.datamodel.Song
 
 @Composable
 fun PlaylistScreen(playlistViewModel: PlaylistViewModel) {
@@ -41,6 +49,76 @@ private fun PlaylistScreenContent(
         Cover(
             album = playlistUiState.album,
             isFavorite = playlistUiState.isFavorite
+        )
+
+        PlaylistHeader(album = playlistUiState.album)
+
+        PlaylistContent(playlist = playlistUiState.playlist)
+    }
+}
+
+@Composable
+private fun PlaylistContent(playlist: List<Song>) {
+    val state = rememberLazyListState()
+    
+    LazyColumn(state = state) {
+        items(playlist){song ->
+            Song(song, false)
+        }
+
+        item {
+            Spacer(modifier = Modifier.height(40.dp))
+        }
+    }
+}
+
+@Composable
+private fun Song(song: Song, isPlaying: Boolean) {
+    Row(
+        modifier = Modifier.padding(vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Column(modifier = Modifier.weight(1.0f)) {
+            Text(
+                text = song.name,
+                style = MaterialTheme.typography.body2,
+                color = if (isPlaying) {
+                    Color.Green
+                } else {
+                    Color.White
+                },
+            )
+
+            Text(
+                text = song.lyric,
+                style = MaterialTheme.typography.caption,
+                color = Color.Gray,
+            )
+        }
+
+        Text(
+            text = song.length,
+            modifier = Modifier.padding(start = 8.dp),
+            style = MaterialTheme.typography.body2,
+            color = Color.LightGray
+        )
+    }
+}
+
+@Composable
+private fun PlaylistHeader(album: Album ) {
+    Column {
+        Text(
+            text = album.name,
+            style = MaterialTheme.typography.h5.copy(fontWeight = FontWeight.Bold),
+            modifier = Modifier.padding(top = 16.dp),
+            color = Color.White
+        )
+
+        Text(
+            text = stringResource(id = R.string.album_info, album.artists, album.year),
+            style = MaterialTheme.typography.body2,
+            color = Color.LightGray,
         )
     }
 }
