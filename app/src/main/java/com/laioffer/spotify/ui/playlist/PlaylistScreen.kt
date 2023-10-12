@@ -17,6 +17,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.google.android.material.color.ColorRoles
 import com.laioffer.spotify.R
 import com.laioffer.spotify.datamodel.Album
 
@@ -73,6 +74,37 @@ private fun Cover(
                 },
                 contentDescription = ""
             )
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(0.6f)
+                    .aspectRatio(1.0f)
+                    .align(Alignment.Center)
+            ) {
+                Image(
+                    modifier = Modifier.fillMaxSize(),
+                    painter = painterResource(id = R.drawable.vinyl_background),
+                    contentDescription = null
+                )
+                
+                AsyncImage(model = album.cover,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .fillMaxWidth(0.6f)
+                        .aspectRatio(1.0f)
+                        .align(Alignment.Center)
+                        .clip(CircleShape),
+                    contentScale = ContentScale.FillBounds
+                )
+            }
+
         }
+
+        Text(
+            text = album.description,
+            modifier = Modifier.padding(top = 4.dp),
+            style = MaterialTheme.typography.caption,
+            color = Color.Gray,
+        )
     }
 }
