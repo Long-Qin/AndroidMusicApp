@@ -19,28 +19,33 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.node.modifierElementOf
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.google.android.material.color.ColorRoles
 import com.laioffer.spotify.R
 import com.laioffer.spotify.datamodel.Album
-import com.laioffer.spotify.datamodel.Playlist
 import com.laioffer.spotify.datamodel.Song
+import com.laioffer.spotify.player.PlayerUiState
+import com.laioffer.spotify.player.PlayerViewModel
 
 @Composable
-fun PlaylistScreen(playlistViewModel: PlaylistViewModel) {
+fun PlaylistScreen(playlistViewModel: PlaylistViewModel, playerViewModel: PlayerViewModel) {
 
     val playlistUiState by playlistViewModel.uiState.collectAsState()
+    val playerUiState by playerViewModel.uiState.collectAsState()
 
     PlaylistScreenContent(
         playlistUiState = playlistUiState,
+        playerUiState = playerUiState,
         onTapFavorite = {
             Log.d("PlaylistScreen", "Tap favorite $it")
             playlistViewModel.toggleFavorite(it)
+        },
+        onTapSong = {
+            playerViewModel.load(it, playlistUiState.album)
+            playerViewModel.play()
         }
     )
 }
@@ -48,7 +53,9 @@ fun PlaylistScreen(playlistViewModel: PlaylistViewModel) {
 @Composable
 private fun PlaylistScreenContent(
     playlistUiState: PlaylistUiState,
-    onTapFavorite: (Boolean) -> Unit
+    playerUiState: PlayerUiState,
+    onTapFavorite: (Boolean) -> Unit,
+    onTapSong: (Song) -> Unit
 ) {
     Column(
         modifier = Modifier.padding(16.dp)
@@ -61,17 +68,17 @@ private fun PlaylistScreenContent(
 
         PlaylistHeader(album = playlistUiState.album)
 
-        PlaylistContent(playlist = playlistUiState.playlist)
+        PlaylistContent(playlist = playlistUiState.playlist, currentSong = playerUiState.song, onTapSong = onTapSong)
     }
 }
 
 @Composable
-private fun PlaylistContent(playlist: List<Song>) {
+private fun PlaylistContent(playlist: List<Song>, currentSong: Song?, onTapSong: (Song) -> Unit) {
     val state = rememberLazyListState()
     
     LazyColumn(state = state) {
         items(playlist){song ->
-            Song(song, false)
+            Song(song, currentSong == song, onTapSong)
         }
 
         item {
@@ -81,9 +88,13 @@ private fun PlaylistContent(playlist: List<Song>) {
 }
 
 @Composable
-private fun Song(song: Song, isPlaying: Boolean) {
+private fun Song(song: Song, isPlaying: Boolean, onTapSong: (Song) -> Unit) {
     Row(
-        modifier = Modifier.padding(vertical = 8.dp),
+        modifier = Modifier
+            .padding(vertical = 8.dp)
+            .clickable {
+                onTapSong(song)
+            },
         verticalAlignment = Alignment.CenterVertically
     ) {
         Column(modifier = Modifier.weight(1.0f)) {
