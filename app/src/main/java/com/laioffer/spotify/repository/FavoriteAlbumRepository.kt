@@ -19,4 +19,6 @@ class FavoriteAlbumRepository @Inject constructor(private val databaseDao: Datab
     suspend fun unfavorieteAlbum(album: Album) = withContext(Dispatchers.IO) {
         databaseDao.unFavoriteAlbum(album)
     }
+
+    fun fetchFavoriteAlbums(): Flow<List<Album>> = databaseDao.fetchFavoriteAlbums().flowOn(Dispatchers.IO)
 }
