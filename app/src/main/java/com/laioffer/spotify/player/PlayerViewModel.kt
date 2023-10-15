@@ -78,6 +78,13 @@ class PlayerViewModel @Inject constructor(private val exoPlayer: ExoPlayer) : Vi
         exoPlayer.pause()
     }
 
+    fun seekTo(positionMs: Long) {
+        _uiState.value = uiState.value.copy(
+            currentMs = positionMs
+        )
+        exoPlayer.seekTo(positionMs)
+    }
+
 }
 
 data class PlayerUiState (
